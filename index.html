@@ -220,14 +220,6 @@ body {
 </div>
 </div>
 
-<!-- 6位激活码弹窗 -->
-<div id="activatePop" class="activate-box hide">
-    <div class="activate-inner">
-        <h3>请输入6位数字激活码解锁</h3>
-        <input id="actCode" placeholder="输入6位数字激活码" maxlength="6">
-        <button onclick="bindCode()">立即激活</button>
-    </div>
-</div>
 
 <script>
 const sb = supabase.createClient(
@@ -240,67 +232,6 @@ const userEmail = document.getElementById("userEmail");
 const activatePop = document.getElementById("activatePop");
 let isActOk = false;
 
-// 登录检测：未登录自动跳 lindex.html
-async function checkLogin(){
-    const {data:{user}} = await sb.auth.getUser();
-    if(!user){
-        location.href = "lindex.html";
-        return;
-    }
-    userNav.style.display = "block";
-    userEmail.innerText = user.email;
-    checkLocalActivate();
-}
-
-// 退出登录 → 返回登录页
-async function doLogout(){
-    await sb.auth.signOut();
-    location.href = "lindex.html";
-}
-
-// 检测本地激活缓存
-function checkLocalActivate(){
-    const localCode = localStorage.getItem("act_code");
-    if(localCode){
-        isActOk = true;
-        activatePop.classList.add("hide");
-    }else{
-        isActOk = false;
-        activatePop.classList.remove("hide");
-        // 拦截所有卡片点击
-        document.querySelectorAll(".card").forEach(item=>{
-            item.onclick = function(e){
-                if(!isActOk){
-                    e.preventDefault();
-                    alert("⚠️ 请先输入6位激活码解锁功能");
-                }
-            }
-        })
-    }
-}
-
-// 6位激活码验证 + 入库标记
-async function bindCode(){
-    const codeVal = document.getElementById("actCode").value.trim();
-    if(codeVal.length !== 6){
-        return alert("请输入完整6位数字激活码");
-    }
-    const {count, error} = await sb.from("activation_code")
-        .select("*", {count:'exact', head:true})
-        .eq("code", codeVal)
-        .eq("used", false);
-
-    if(error || count === 0){
-        return alert("❌ 激活码无效/错误/已使用");
-    }
-    await sb.from("activation_code").update({used:true}).eq("code", codeVal);
-    localStorage.setItem("act_code", codeVal);
-    alert("✅ 激活成功，全部功能已解锁");
-    location.reload();
-}
-
-window.onload = checkLogin;
-</script>
 
 </body>
 </html>
