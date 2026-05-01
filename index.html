@@ -1,26 +1,306 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>跳转中...</title>
-    <script>
-        // 目标跳转地址
-        const targetUrl = "https://ddaa.online";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>硬核工具站</title>
 
-        function goJump() {
-            try {
-                window.location.href = targetUrl;
-            } catch (e) {
-                // 跳转出错自动刷新重试
-                location.reload();
-            }
-        }
+<!-- 51LA 统计 -->
+<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
+<script>LA.init({id:"3PjnuI4NYLrri7NP",ck:"3PjnuI4NYLrri7NP",autoTrack:true,hashMode:true,screenRecord:true})</script>
 
-        // 页面加载立刻跳转
-        window.onload = goJump;
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    background: linear-gradient(135deg, #eef2f7, #e3e8ef);
+}
+
+.container {
+    max-width: 520px;
+    margin: auto;
+    padding: 10px;
+}
+
+.header {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    padding: 15px 0 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.card {
+    background: rgba(255,255,255,0.9);
+    border-radius: 18px;
+    padding: 18px 5px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+
+.card:active {
+    transform: scale(0.92);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+}
+
+.text {
+    font-size: 14px;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+/* 登录账号栏 */
+.user-box{
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 9999;
+    background:#1e293b;
+    padding:6px 10px;
+    border-radius:4px;
+    color:#fff;
+    font-size:13px;
+    display:none;
+}
+.logout-btn{
+    background:#ef4444;
+    border:none;
+    color:#fff;
+    border-radius:3px;
+    padding:2px 6px;
+    margin-left:6px;
+    font-size:12px;
+    cursor:pointer;
+}
+
+/* 激活弹窗 */
+.activate-box{
+    position:fixed;
+    inset:0;
+    background:#00000077;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:99999;
+}
+.activate-inner{
+    background:#fff;
+    padding:24px;
+    border-radius:12px;
+    width:340px;
+}
+.activate-inner h3{
+    margin-bottom:15px;
+    color:#333;
+}
+.activate-inner input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin-bottom:12px;
+    outline: none;
+}
+.activate-inner button{
+    width:100%;
+    padding:10px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor: pointer;
+}
+.hide{display:none !important;}
+</style>
 </head>
+
 <body>
-    正在跳转中，请勿关闭页面...
+
+<!-- 账号信息 & 退出 -->
+<div class="user-box" id="userNav">
+    <span id="userEmail"></span>
+    <button class="logout-btn" onclick="doLogout()">退出</button>
+</div>
+
+<div class="container">
+<div class="header">🛥️硬核工具站</div>
+
+<div class="grid">
+<a class="card" href="/a.html">
+<div class="icon">🎬</div><div class="text">播放器</div>
+</a>
+
+<a class="card" href="/b.html">
+<div class="icon">🖼️</div><div class="text">图片</div>
+</a>
+
+<a class="card" href="/c.html">
+<div class="icon">🎵</div><div class="text">音乐</div>
+</a>
+
+<a class="card" href="/d.html">
+<div class="icon">📁</div><div class="text">文件</div>
+</a>
+
+<a class="card" href="/e.html">
+<div class="icon">🌏</div><div class="text">浏览器</div>
+</a>
+
+<a class="card" href="/f.html">
+<div class="icon">⬇️</div><div class="text">下载</div>
+</a>
+
+<a class="card" href="/g.html">
+<div class="icon">📝</div><div class="text">计算</div>
+</a>
+
+<a class="card" href="/h.html">
+<div class="icon">🕊️</div><div class="text">云服务</div>
+</a>
+
+<a class="card" href="/i.html">
+<div class="icon">🧭</div><div class="text">地图</div>
+</a>
+
+<a class="card" href="/j.html">
+<div class="icon">📡</div><div class="text">雷达</div>
+</a>
+
+<a class="card" href="/k.html">
+<div class="icon">🎮</div><div class="text">游戏</div>
+</a>
+
+<a class="card" href="/l.html">
+<div class="icon">🛷</div><div class="text">测试中心</div>
+</a>
+
+<a class="card" href="/m.html">
+<div class="icon">🎞</div><div class="text">图像拆帧</div>
+</a>
+
+<a class="card" href="/n.html">
+<div class="icon">🗃</div><div class="text">编译器</div>
+</a>
+
+<a class="card" href="/o.html">
+<div class="icon">📚</div><div class="text">知识提升</div>
+</a>
+</div>
+
+<div class="footer">
+    <p>© 2026ଘ(੭ˊᵕˋ)੭*
+    专注实用功能打造，高效便捷，解锁多元实用服务
+    દ્દીᵔ..ᵔ₎✧</p>
+</div>
+</div>
+
+<!-- 6位激活码弹窗 -->
+<div id="activatePop" class="activate-box hide">
+    <div class="activate-inner">
+        <h3>请输入6位数字激活码解锁</h3>
+        <input id="actCode" placeholder="输入6位数字激活码" maxlength="6">
+        <button onclick="bindCode()">立即激活</button>
+    </div>
+</div>
+
+<script>
+const sb = supabase.createClient(
+    "https://czispkecvokqsvomquqo.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6aXNwa2Vjdm9rcXN2b21xdXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxODc4MDEsImV4cCI6MjA5Mjc2MzgwMX0.0S1DcKYE1aVjaZsAKURzGdd4X2G2q5o570Q6pUiOWp0"
+);
+
+const userNav = document.getElementById("userNav");
+const userEmail = document.getElementById("userEmail");
+const activatePop = document.getElementById("activatePop");
+let isActOk = false;
+
+// 登录检测：未登录自动跳 lindex.html
+async function checkLogin(){
+    const {data:{user}} = await sb.auth.getUser();
+    if(!user){
+        location.href = "lindex.html";
+        return;
+    }
+    userNav.style.display = "block";
+    userEmail.innerText = user.email;
+    checkLocalActivate();
+}
+
+// 退出登录 → 返回登录页
+async function doLogout(){
+    await sb.auth.signOut();
+    location.href = "lindex.html";
+}
+
+// 检测本地激活缓存
+function checkLocalActivate(){
+    const localCode = localStorage.getItem("act_code");
+    if(localCode){
+        isActOk = true;
+        activatePop.classList.add("hide");
+    }else{
+        isActOk = false;
+        activatePop.classList.remove("hide");
+        // 拦截所有卡片点击
+        document.querySelectorAll(".card").forEach(item=>{
+            item.onclick = function(e){
+                if(!isActOk){
+                    e.preventDefault();
+                    alert("⚠️ 请先输入6位激活码解锁功能");
+                }
+            }
+        })
+    }
+}
+
+// 6位激活码验证 + 入库标记
+async function bindCode(){
+    const codeVal = document.getElementById("actCode").value.trim();
+    if(codeVal.length !== 6){
+        return alert("请输入完整6位数字激活码");
+    }
+    const {count, error} = await sb.from("activation_code")
+        .select("*", {count:'exact', head:true})
+        .eq("code", codeVal)
+        .eq("used", false);
+
+    if(error || count === 0){
+        return alert("❌ 激活码无效/错误/已使用");
+    }
+    await sb.from("activation_code").update({used:true}).eq("code", codeVal);
+    localStorage.setItem("act_code", codeVal);
+    alert("✅ 激活成功，全部功能已解锁");
+    location.reload();
+}
+
+window.onload = checkLogin;
+</script>
+
 </body>
 </html>
